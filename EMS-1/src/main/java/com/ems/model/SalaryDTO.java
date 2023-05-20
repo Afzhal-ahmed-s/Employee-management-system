@@ -10,20 +10,19 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Entity
 @Data
-public class Salary {
+@AllArgsConstructor
+@NoArgsConstructor
+public class SalaryDTO {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+
 	private Integer salaryId;
 	
     private Integer employeeId;
-    
-//    @OneToOne(cascade = CascadeType.ALL)
-//    private Employee employee;
     
     private String bankAccountName;
     private String bankAccountNumber;
@@ -38,7 +37,6 @@ public class Salary {
     private Double tdsAmount;
     private Double deductionAmount;
    
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Document salarySlip;
     
     private String notes;

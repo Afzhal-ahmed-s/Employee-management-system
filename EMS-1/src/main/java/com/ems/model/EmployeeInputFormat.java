@@ -16,9 +16,7 @@ import lombok.Data;
 @Data
 public class EmployeeInputFormat {
 
-//		@Id
-//		@GeneratedValue(strategy = GenerationType.AUTO)
-	    private int employeeId;
+
 	    private String firstName;
 	    private String lastName;
 	    private String phoneNumber;

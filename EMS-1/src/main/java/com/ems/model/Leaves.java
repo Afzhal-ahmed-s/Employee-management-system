@@ -17,12 +17,12 @@ public class Leaves {
 
 		@Id
 		@GeneratedValue(strategy = GenerationType.AUTO)
-	 	private int leaveId;
+	 	private Integer leaveId;
 		
-//	    private int employeeId;
+	    private Integer employeeId;
 	    
-	    @OneToOne(cascade = CascadeType.ALL)
-	    private Employee employee;
+//	    @OneToOne(cascade = CascadeType.ALL)
+//	    private Employee employee;
 	    
 	    private String leaveType;
 	    private LocalDate leaveDate;
