@@ -8,6 +8,4 @@ import com.ems.model.Document;
 @Repository
 public interface DocumentRepository extends JpaRepository<Document, Integer>{
 
-	
-	
 }

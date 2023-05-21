@@ -1,10 +1,71 @@
 package com.ems.serviceImplimentation;
 
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ems.exception.EmployeeException;
+import com.ems.exception.LeaveException;
+import com.ems.exception.SalaryException;
+import com.ems.model.Leaves;
+import com.ems.model.Salary;
+import com.ems.repository.EmployeeRepository;
+import com.ems.repository.LeaveRepository;
 import com.ems.service.LeavesService;
 
 @Service
 public class LeavesServiceImplementation implements LeavesService{
+
+	@Autowired
+	private LeaveRepository leaveRepository;
+	
+	@Autowired
+	private EmployeeRepository employeeRepository;
+	
+	@Override
+	public Leaves addLeave(Leaves leaves) throws LeaveException {
+
+		if(employeeRepository.findById(leaves.getEmployeeId()).isPresent() )return leaveRepository.save(leaves);
+		else throw new LeaveException("Employee ID "+ leaves.getEmployeeId() +" not found.");
+	}
+
+	@Override
+	public Leaves getLeaveById(Integer leaveId) throws LeaveException {
+
+		return leaveRepository.findById(leaveId).orElseThrow( ()-> new LeaveException("Leave not found with Id "+ leaveId +".") );
+	}
+
+	@Override
+	public List<Leaves> getLeaveByEmployeeId(Integer employeeId) throws LeaveException {
+		if( leaveRepository.findByEmployeeId(employeeId).size() != 0 )return leaveRepository.findByEmployeeId(employeeId);
+		else throw new LeaveException("Employee ID "+ employeeId +" not found in leave records.");
+	}
+
+	@Override
+	public Leaves getLeaveByLeaveIdAndEmployeeId(Integer employeeId, Integer leaveId) throws LeaveException {
+		List<Leaves> listOfLeaves = leaveRepository.findByEmployeeId(employeeId);
+		System.out.println("Check1");
+		for(Leaves leaves : listOfLeaves) {
+			if(leaves.getLeaveId() == leaveId) {
+				return leaves;
+			}
+		}
+		
+		throw new LeaveException("Employee ID "+employeeId +" and leave ID "+ leaveId +" doesn't match in a single record.");
+	}
+
+	@Override
+	public Leaves deleteById(Integer leaveId) throws LeaveException {
+
+		Optional<Leaves> leaves = leaveRepository.findById(leaveId);
+		
+		if(leaves.isPresent()) {
+			leaveRepository.deleteById(leaveId);
+			return leaves.get();
+		}
+		else throw new LeaveException("Leave Id "+ leaveId + " not found.");
+	}
 
 }

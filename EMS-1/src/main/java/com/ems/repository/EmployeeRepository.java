@@ -7,5 +7,5 @@ import com.ems.model.Employee;
 
 @Service
 public interface EmployeeRepository extends JpaRepository<Employee, Integer>{
-
+	
 }

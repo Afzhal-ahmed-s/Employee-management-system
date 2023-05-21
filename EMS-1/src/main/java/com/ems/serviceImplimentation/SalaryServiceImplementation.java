@@ -26,13 +26,13 @@ public class SalaryServiceImplementation implements SalaryService{
 	public Salary addSalary(Salary salary) throws SalaryException, EmployeeException {
 		System.out.println("Check: "+ employeeRepository.findById(salary.getEmployeeId()) );
 		if(employeeRepository.findById(salary.getEmployeeId()).isPresent() )return salaryRepository.save(salary);
-		else throw new EmployeeException("Employee ID not found.");
+		else throw new EmployeeException("Employee ID "+ salary.getEmployeeId() +" not found.");
 	}
 
 	@Override
 	public Salary getSalaryById(Integer salaryId) throws SalaryException {
 
-		return salaryRepository.findById(salaryId).orElseThrow( ()-> new SalaryException("Salary not found with this salary ID.") );
+		return salaryRepository.findById(salaryId).orElseThrow( ()-> new SalaryException("Salary not found with salary ID "+ salaryId +".") );
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class SalaryServiceImplementation implements SalaryService{
 			}
 		}
 		
-		throw new SalaryException("Employee ID and salary ID doesn't match in a single record.");
+		throw new SalaryException("Employee ID "+ employeeId +" and salary ID "+ salaryId +" doesn't match in a single record.");
 	}
 
 	@Override

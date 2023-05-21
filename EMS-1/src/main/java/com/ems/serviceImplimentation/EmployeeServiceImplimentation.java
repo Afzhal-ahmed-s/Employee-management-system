@@ -1,7 +1,9 @@
 package com.ems.serviceImplimentation;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,12 +13,13 @@ import com.ems.enums.DocumentType;
 import com.ems.enums.Gender;
 import com.ems.exception.DocumentException;
 import com.ems.exception.EmployeeException;
+import com.ems.model.DateRange;
 import com.ems.model.Document;
 import com.ems.model.Employee;
-import com.ems.model.EmployeeInputFormat;
+import com.ems.model.Leaves;
 import com.ems.repository.EmployeeRepository;
+import com.ems.repository.LeaveRepository;
 import com.ems.service.EmployeeService;
-import com.ems.service.EnumConversionService;
 
 @Service
 public class EmployeeServiceImplimentation implements EmployeeService{
@@ -25,7 +28,7 @@ public class EmployeeServiceImplimentation implements EmployeeService{
 	private EmployeeRepository employeeRepository;
 	
 	@Autowired
-	private EnumConversionService enumConversionService;
+	private LeaveRepository leaveRepository;
 	
 	@Override
 	public Employee addEmployee(Employee employee) throws EmployeeException {
@@ -163,6 +166,50 @@ public class EmployeeServiceImplimentation implements EmployeeService{
 
 		return employeeRepository.save(employeeWithId);
 
+	}
+
+
+	@Override
+	public List<Document> getAlldocumentsById(Integer employeeId) throws DocumentException, EmployeeException {
+
+		Optional<Employee> employee = employeeRepository.findById(employeeId);
+		
+		if(employee.isPresent()) {
+			List<Document> listOfDocuments = employee.get().getDocuments();
+			if(listOfDocuments.size() == 0)throw new DocumentException("Employee with Id "+ employeeId +" has has no documents in his records.");
+			else return listOfDocuments;
+		}
+		else throw new EmployeeException("Employee with Id "+ employeeId +" does not exists.");
+		
+	}
+
+
+	@Override
+	public List<Leaves> getAllLeavesByEmployeeIdWithinDateRange(Integer employeeID, DateRange dateRange) {
+
+		LocalDate startDate = dateRange.getLeaveFrom();
+		LocalDate endDate = dateRange.getLeaveTo();
+
+		List<Leaves> listOfAllLeaves = leaveRepository.findAll();
+		List<Leaves> listOfAllLeavesForAnEmployeeWithInDateRange = new ArrayList<>();
+		
+		for(Leaves leave : listOfAllLeaves) {
+			
+			if( leave.getEmployeeId() == employeeID ) {
+								
+				if(leave.getLeaveFrom().isEqual(startDate) || ( leave.getLeaveFrom().isAfter(startDate) && leave.getLeaveFrom().isBefore(endDate)) ||
+					leave.getLeaveFrom().isEqual(endDate)	
+					||
+					leave.getLeaveTo().isEqual(startDate) || ( leave.getLeaveTo().isAfter(startDate) && leave.getLeaveTo().isBefore(endDate)) ||
+					leave.getLeaveTo().isEqual(endDate)
+					) 
+				{
+					listOfAllLeavesForAnEmployeeWithInDateRange.add(leave);
+				}
+			}
+		}
+		
+		return listOfAllLeavesForAnEmployeeWithInDateRange;
 	}
 
 }

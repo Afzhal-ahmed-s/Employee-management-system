@@ -8,3 +8,4 @@ select * from employee;
 select * from document;
 select * from employee_documents;
 select * from salary;
+select * from leaves;

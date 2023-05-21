@@ -45,6 +45,17 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<MyErrorDetails>(err,HttpStatus.BAD_GATEWAY);
 	}
 	
+	@ExceptionHandler(LeaveException.class)
+	public ResponseEntity<MyErrorDetails> exception(LeaveException exc,WebRequest wrq){
+		
+		MyErrorDetails err=new MyErrorDetails();
+		err.setLocaldateTime(LocalDateTime.now());
+		err.setMessage(exc.getMessage());
+		err.setDescription(wrq.getDescription(false));
+		
+		return new ResponseEntity<MyErrorDetails>(err,HttpStatus.BAD_GATEWAY);
+	}
+	
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<MyErrorDetails> exception(Exception exc,WebRequest wrq){
 		

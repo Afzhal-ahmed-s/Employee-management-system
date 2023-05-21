@@ -10,7 +10,6 @@ import com.ems.exception.DocumentException;
 import com.ems.model.Document;
 import com.ems.repository.DocumentRepository;
 import com.ems.service.DocumentService;
-import com.ems.service.EnumConversionService;
 
 @Service
 public class DocumentServiceImplementation implements DocumentService{
@@ -18,9 +17,7 @@ public class DocumentServiceImplementation implements DocumentService{
 	
 	@Autowired
 	private DocumentRepository documentRepository;
-	
-	@Autowired
-	private EnumConversionService enumConversionService;
+
 	
 	@Override
 	public Document getDocumentByID(Integer documentId) throws DocumentException {

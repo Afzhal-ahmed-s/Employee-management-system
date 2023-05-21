@@ -15,10 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ems.exception.DocumentException;
 import com.ems.exception.EmployeeException;
+import com.ems.exception.LeaveException;
 import com.ems.exception.SalaryException;
+import com.ems.model.DateRange;
+import com.ems.model.Document;
 import com.ems.model.Employee;
+import com.ems.model.Leaves;
 import com.ems.model.Salary;
 import com.ems.service.EmployeeService;
+import com.ems.service.LeavesService;
 import com.ems.service.SalaryService;
 
 @RestController
@@ -31,11 +36,9 @@ public class EmployeeController {
 	@Autowired
 	private SalaryService salaryService;
 	
+	@Autowired
+	private LeavesService leavesService;
 	
-	@GetMapping("/status")
-	public ResponseEntity<String>getStatus(){
-		return new ResponseEntity<String>("Up",HttpStatus.OK);
-	}
 	
 	@PostMapping("")
 	public ResponseEntity<Employee> saveEmployee(@RequestBody Employee employee) throws EmployeeException{
@@ -62,7 +65,7 @@ public class EmployeeController {
 	}
 	
 	@GetMapping("/{employeeId}/salary")
-	public ResponseEntity<List<Salary>> getSalaryByEmployeeId(@PathVariable Integer employeeId) throws EmployeeException{
+	public ResponseEntity<List<Salary>> getSalaryByEmployeeIdWSalary(@PathVariable Integer employeeId) throws EmployeeException{
 		
 		List<Salary> listOfSalaries = salaryService.getSalaryByEmployeeId(employeeId);
 		return new ResponseEntity<List<Salary>>(listOfSalaries, HttpStatus.ACCEPTED);
@@ -73,6 +76,36 @@ public class EmployeeController {
 		
 		Salary salary = salaryService.getSalaryBySalaryIdAndEmployeeId(employeeId, salaryId);
 		return new ResponseEntity<Salary>(salary, HttpStatus.ACCEPTED);
+	}
+	
+	@GetMapping("/{employeeId}/leave")
+	public ResponseEntity<List<Leaves>> getLeaveByEmployeeIdWLeave(@PathVariable Integer employeeId) throws LeaveException{
+		
+		List<Leaves> listOfLeaves = leavesService.getLeaveByEmployeeId(employeeId);
+		return new ResponseEntity<List<Leaves>>(listOfLeaves, HttpStatus.ACCEPTED);
+	}
+	
+	@GetMapping("/{employeeId}/leave/{leaveId}")
+	public ResponseEntity<Leaves> getLeaveByEmployeeIdAndLeaveId(@PathVariable Integer employeeId, @PathVariable Integer leaveId) throws EmployeeException, LeaveException{
+		
+		Leaves leaves = leavesService.getLeaveByLeaveIdAndEmployeeId(employeeId, leaveId);
+		return new ResponseEntity<Leaves>(leaves, HttpStatus.ACCEPTED);
+	}
+	
+	@GetMapping("/{employeeId}/getDocuments")
+	public ResponseEntity<List<Document>> getAllDocumentsOfAnEmployeeByEmployeeId(@PathVariable Integer employeeId) throws DocumentException, EmployeeException{
+		
+		List<Document> listOfDocuments = employeeService.getAlldocumentsById(employeeId);
+		return new ResponseEntity<List<Document>>(listOfDocuments, HttpStatus.ACCEPTED);
+	}
+	
+	
+	@PostMapping("/{employeeId}/getLeaves")
+	public ResponseEntity<List<Leaves>> getListOfLeavesForEmployeeWithinDateRange(@RequestBody DateRange dateRange, @PathVariable Integer employeeId)
+	{
+		
+		List<Leaves> answer = employeeService.getAllLeavesByEmployeeIdWithinDateRange(employeeId, dateRange);
+		return new ResponseEntity<List<Leaves>>(answer, HttpStatus.ACCEPTED);
 	}
 	
 	
