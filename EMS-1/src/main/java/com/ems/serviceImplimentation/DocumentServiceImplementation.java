@@ -45,7 +45,9 @@ public class DocumentServiceImplementation implements DocumentService{
 	public Document deleteDocumentById(Integer documentId) throws DocumentException {
 
 		Document document = documentRepository.findById(documentId).orElseThrow( ()-> new DocumentException("No document with such ID found.") );
-
+		
+		System.out.println(document.getFile());
+		
 		for(Document doc : getAllDocuments()) {
 			if(doc.equals(document)) {
 				documentRepository.delete(document);

@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
 		err.setMessage(exc.getMessage());
 		err.setDescription(wrq.getDescription(false));
 		
-		return new ResponseEntity<MyErrorDetails>(err,HttpStatus.BAD_GATEWAY);
+		return new ResponseEntity<MyErrorDetails>(err,HttpStatus.BAD_REQUEST);
 		
 	}
 	
@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
 		err.setMessage(exc.getMessage());
 		err.setDescription(wrq.getDescription(false));
 		
-		return new ResponseEntity<MyErrorDetails>(err,HttpStatus.BAD_GATEWAY);
+		return new ResponseEntity<MyErrorDetails>(err,HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler(SalaryException.class)
@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
 		err.setMessage(exc.getMessage());
 		err.setDescription(wrq.getDescription(false));
 		
-		return new ResponseEntity<MyErrorDetails>(err,HttpStatus.BAD_GATEWAY);
+		return new ResponseEntity<MyErrorDetails>(err,HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler(LeaveException.class)
@@ -53,7 +53,7 @@ public class GlobalExceptionHandler {
 		err.setMessage(exc.getMessage());
 		err.setDescription(wrq.getDescription(false));
 		
-		return new ResponseEntity<MyErrorDetails>(err,HttpStatus.BAD_GATEWAY);
+		return new ResponseEntity<MyErrorDetails>(err,HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler(Exception.class)
@@ -64,7 +64,7 @@ public class GlobalExceptionHandler {
 		err.setMessage(exc.getMessage());
 		err.setDescription(wrq.getDescription(false));
 		
-		return new ResponseEntity<MyErrorDetails>(err,HttpStatus.BAD_GATEWAY);
+		return new ResponseEntity<MyErrorDetails>(err,HttpStatus.BAD_REQUEST);
 	}
 	
 	
