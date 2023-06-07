@@ -33,7 +33,7 @@ public class LeavesController {
 	public ResponseEntity<Leaves> getLeaveById(@PathVariable Integer leaveId) throws LeaveException{
 		
 		Leaves leaves = leavesService.getLeaveById(leaveId);
-		return new ResponseEntity<Leaves>(leaves, HttpStatus.ACCEPTED);
+		return new ResponseEntity<Leaves>(leaves, HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{leaveId}")

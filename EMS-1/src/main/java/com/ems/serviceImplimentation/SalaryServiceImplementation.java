@@ -1,8 +1,10 @@
 package com.ems.serviceImplimentation;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.ems.exception.EmployeeException;
@@ -22,24 +24,26 @@ public class SalaryServiceImplementation implements SalaryService{
 	@Autowired
 	private EmployeeRepository employeeRepository;
 	
+	String statusCode_NOT_FOUND = "HttpStatus.NOT_FOUND*_";
+	
 	@Override
 	public Salary addSalary(Salary salary) throws SalaryException, EmployeeException {
 		System.out.println("Check: "+ employeeRepository.findById(salary.getEmployeeId()) );
 		if(employeeRepository.findById(salary.getEmployeeId()).isPresent() )return salaryRepository.save(salary);
-		else throw new EmployeeException("Employee ID "+ salary.getEmployeeId() +" not found.");
+		else throw new EmployeeException(statusCode_NOT_FOUND + "Employee ID "+ salary.getEmployeeId() + " not found.");
 	}
 
 	@Override
 	public Salary getSalaryById(Integer salaryId) throws SalaryException {
 
-		return salaryRepository.findById(salaryId).orElseThrow( ()-> new SalaryException("Salary not found with salary ID "+ salaryId +".") );
+		return salaryRepository.findById(salaryId).orElseThrow( ()-> new SalaryException(statusCode_NOT_FOUND +"Salary not found with salary ID "+ salaryId +".") );
 	}
 
 	@Override
 	public List<Salary> getSalaryByEmployeeId(Integer employeeId) throws EmployeeException {
 
 		if( salaryRepository.findByEmployeeId(employeeId).size() != 0 )return salaryRepository.findByEmployeeId(employeeId);
-		else throw new EmployeeException("Employee ID "+ employeeId +" not found in salary records.");
+		else throw new EmployeeException(statusCode_NOT_FOUND + "Employee ID "+ employeeId +" not found in salary records.");
 	}
 
 	@Override
@@ -53,18 +57,18 @@ public class SalaryServiceImplementation implements SalaryService{
 			}
 		}
 		
-		throw new SalaryException("Employee ID "+ employeeId +" and salary ID "+ salaryId +" doesn't match in a single record.");
+		throw new SalaryException(statusCode_NOT_FOUND + "Employee ID "+ employeeId +" and salary ID "+ salaryId +" doesn't match in a single record.");
 	}
 
 	@Override
 	public SalaryDTO deleteSalaryBySalaryId(Integer salaryId) throws SalaryException {
 
-		Salary salary = salaryRepository.findById(salaryId).get();
-		if(salary != null) {
-			
+		Optional<Salary> Optsalary = salaryRepository.findById(salaryId);
+
+		if(Optsalary.isPresent()) {
+			Salary salary = Optsalary.get();
 			//to avoid loading error
 		    System.out.println ( salary.getSalarySlip() );
-			//salary.getSalarySlip().getDateOfExpiry();
 			 
 			salaryRepository.deleteById(salaryId);
 			SalaryDTO salaryDTO = new SalaryDTO(salaryId, salary.getEmployeeId(),
@@ -75,7 +79,7 @@ public class SalaryServiceImplementation implements SalaryService{
 					salary.getNotes());
 			return salaryDTO;
 		}
-		else throw new SalaryException("Salary Id "+salaryId+" not found.");
+		else throw new SalaryException(statusCode_NOT_FOUND + "Salary Id "+salaryId+" not found.");
 	}
 
 	

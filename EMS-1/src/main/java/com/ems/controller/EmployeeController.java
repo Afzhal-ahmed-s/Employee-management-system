@@ -53,14 +53,16 @@ public class EmployeeController {
 	public ResponseEntity<Employee> getEmployeeById( @PathVariable Integer employeeId) throws EmployeeException{
 		Employee employee = employeeService.getEmployeeById(employeeId);
 		
-		return new ResponseEntity<Employee>(employee,HttpStatus.ACCEPTED);
+		return new ResponseEntity<Employee>(employee,HttpStatus.OK);
 	}
 	
 	@PatchMapping("/{employeeId}")
 	public ResponseEntity<Employee> updateEmployee(@RequestBody Employee employee, @PathVariable Integer employeeId) throws EmployeeException, DocumentException{
-		
+		System.out.println("Check version 2 controller level");
+
 		Employee persistedEmployee = employeeService.updateEmployeeById(employee, employeeId);
-		
+		System.out.println("Check version 2 controller level");
+
 		return new ResponseEntity<Employee>(persistedEmployee,HttpStatus.ACCEPTED);
 	}
 	
@@ -68,40 +70,40 @@ public class EmployeeController {
 	public ResponseEntity<List<Salary>> getSalaryByEmployeeIdWSalary(@PathVariable Integer employeeId) throws EmployeeException{
 		
 		List<Salary> listOfSalaries = salaryService.getSalaryByEmployeeId(employeeId);
-		return new ResponseEntity<List<Salary>>(listOfSalaries, HttpStatus.ACCEPTED);
+		return new ResponseEntity<List<Salary>>(listOfSalaries, HttpStatus.OK);
 	}
 	
 	@GetMapping("/{employeeId}/salary/{salaryId}")
 	public ResponseEntity<Salary> getSalaryByEmployeeIdAndSalaryId(@PathVariable Integer employeeId, @PathVariable Integer salaryId) throws EmployeeException, SalaryException{
 		
 		Salary salary = salaryService.getSalaryBySalaryIdAndEmployeeId(employeeId, salaryId);
-		return new ResponseEntity<Salary>(salary, HttpStatus.ACCEPTED);
+		return new ResponseEntity<Salary>(salary, HttpStatus.OK);
 	}
 	
 	@GetMapping("/{employeeId}/leave")
 	public ResponseEntity<List<Leaves>> getLeaveByEmployeeIdWLeave(@PathVariable Integer employeeId) throws LeaveException{
 		
 		List<Leaves> listOfLeaves = leavesService.getLeaveByEmployeeId(employeeId);
-		return new ResponseEntity<List<Leaves>>(listOfLeaves, HttpStatus.ACCEPTED);
+		return new ResponseEntity<List<Leaves>>(listOfLeaves, HttpStatus.OK);
 	}
 	
 	@GetMapping("/{employeeId}/leave/{leaveId}")
 	public ResponseEntity<Leaves> getLeaveByEmployeeIdAndLeaveId(@PathVariable Integer employeeId, @PathVariable Integer leaveId) throws EmployeeException, LeaveException{
 		
 		Leaves leaves = leavesService.getLeaveByLeaveIdAndEmployeeId(employeeId, leaveId);
-		return new ResponseEntity<Leaves>(leaves, HttpStatus.ACCEPTED);
+		return new ResponseEntity<Leaves>(leaves, HttpStatus.OK);
 	}
 	
 	@GetMapping("/{employeeId}/getDocuments")
 	public ResponseEntity<List<Document>> getAllDocumentsOfAnEmployeeByEmployeeId(@PathVariable Integer employeeId) throws DocumentException, EmployeeException{
 		
 		List<Document> listOfDocuments = employeeService.getAlldocumentsById(employeeId);
-		return new ResponseEntity<List<Document>>(listOfDocuments, HttpStatus.ACCEPTED);
+		return new ResponseEntity<List<Document>>(listOfDocuments, HttpStatus.OK);
 	}
 	
 	
 	@PostMapping("/{employeeId}/getLeaves")
-	public ResponseEntity<List<Leaves>> getListOfLeavesForEmployeeWithinDateRange(@RequestBody DateRange dateRange, @PathVariable Integer employeeId)
+	public ResponseEntity<List<Leaves>> getListOfLeavesForEmployeeWithinDateRange(@RequestBody DateRange dateRange, @PathVariable Integer employeeId) throws EmployeeException
 	{
 		
 		List<Leaves> answer = employeeService.getAllLeavesByEmployeeIdWithinDateRange(employeeId, dateRange);

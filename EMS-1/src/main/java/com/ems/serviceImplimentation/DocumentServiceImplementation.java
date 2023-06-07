@@ -17,12 +17,13 @@ public class DocumentServiceImplementation implements DocumentService{
 	
 	@Autowired
 	private DocumentRepository documentRepository;
-
+	
+	String statusCode_NOT_FOUND = "HttpStatus.NOT_FOUND*_";
 	
 	@Override
 	public Document getDocumentByID(Integer documentId) throws DocumentException {
 
-		Document document = documentRepository.findById(documentId).orElseThrow( ()->  new DocumentException("Incorrect document ID number.") );
+		Document document = documentRepository.findById(documentId).orElseThrow( ()->  new DocumentException(statusCode_NOT_FOUND + "Incorrect document ID number.") );
 		
 		return document;
 	}
@@ -44,7 +45,7 @@ public class DocumentServiceImplementation implements DocumentService{
 	@Override
 	public Document deleteDocumentById(Integer documentId) throws DocumentException {
 
-		Document document = documentRepository.findById(documentId).orElseThrow( ()-> new DocumentException("No document with such ID found.") );
+		Document document = documentRepository.findById(documentId).orElseThrow( ()-> new DocumentException(statusCode_NOT_FOUND + "No document with such ID found.") );
 		
 		System.out.println(document.getFile());
 		
@@ -67,7 +68,7 @@ public class DocumentServiceImplementation implements DocumentService{
 	@Override
 	public Document updateDocumentById(Document document, Integer documentId) throws DocumentException {
 		
-		Document foundDocument = documentRepository.findById(documentId).orElseThrow( ()-> new DocumentException("No such document with documentId found.") ); 
+		Document foundDocument = documentRepository.findById(documentId).orElseThrow( ()-> new DocumentException(statusCode_NOT_FOUND + "No such document with documentId found.") ); 
 		
 		if(document.getDateOfExpiry() != null)foundDocument.setDateOfExpiry(document.getDateOfExpiry());
 		if(document.getDateOfIssue() != null)foundDocument.setDateOfIssue(document.getDateOfIssue());

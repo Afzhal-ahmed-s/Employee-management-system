@@ -24,36 +24,38 @@ public class LeavesServiceImplementation implements LeavesService{
 	@Autowired
 	private EmployeeRepository employeeRepository;
 	
+	String statusCode_NOT_FOUND = "HttpStatus.NOT_FOUND*_";
+	
 	@Override
 	public Leaves addLeave(Leaves leaves) throws LeaveException {
 
 		if(employeeRepository.findById(leaves.getEmployeeId()).isPresent() )return leaveRepository.save(leaves);
-		else throw new LeaveException("Employee ID "+ leaves.getEmployeeId() +" not found.");
+		else throw new LeaveException(statusCode_NOT_FOUND + "Employee ID "+ leaves.getEmployeeId() +" not found.");
 	}
 
 	@Override
 	public Leaves getLeaveById(Integer leaveId) throws LeaveException {
 
-		return leaveRepository.findById(leaveId).orElseThrow( ()-> new LeaveException("Leave not found with Id "+ leaveId +".") );
+		return leaveRepository.findById(leaveId).orElseThrow( ()-> new LeaveException(statusCode_NOT_FOUND + "Leave not found with Id "+ leaveId +".") );
 	}
 
 	@Override
 	public List<Leaves> getLeaveByEmployeeId(Integer employeeId) throws LeaveException {
 		if( leaveRepository.findByEmployeeId(employeeId).size() != 0 )return leaveRepository.findByEmployeeId(employeeId);
-		else throw new LeaveException("Employee ID "+ employeeId +" not found in leave records.");
+		else throw new LeaveException(statusCode_NOT_FOUND + "Employee ID "+ employeeId +" not found in leave records.");
 	}
 
 	@Override
 	public Leaves getLeaveByLeaveIdAndEmployeeId(Integer employeeId, Integer leaveId) throws LeaveException {
 		List<Leaves> listOfLeaves = leaveRepository.findByEmployeeId(employeeId);
-		System.out.println("Check1");
+		System.out.println("Check version 2");
 		for(Leaves leaves : listOfLeaves) {
 			if(leaves.getLeaveId() == leaveId) {
 				return leaves;
 			}
 		}
 		
-		throw new LeaveException("Employee ID "+employeeId +" and leave ID "+ leaveId +" doesn't match in a single record.");
+		throw new LeaveException(statusCode_NOT_FOUND + "Employee ID "+employeeId +" and leave ID "+ leaveId +" doesn't match in a single record.");
 	}
 
 	@Override
@@ -65,7 +67,7 @@ public class LeavesServiceImplementation implements LeavesService{
 			leaveRepository.deleteById(leaveId);
 			return leaves.get();
 		}
-		else throw new LeaveException("Leave Id "+ leaveId + " not found.");
+		else throw new LeaveException(statusCode_NOT_FOUND + "Leave Id "+ leaveId + " not found.");
 	}
 
 }

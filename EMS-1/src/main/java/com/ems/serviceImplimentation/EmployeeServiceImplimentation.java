@@ -30,8 +30,12 @@ public class EmployeeServiceImplimentation implements EmployeeService{
 	@Autowired
 	private LeaveRepository leaveRepository;
 	
+	String statusCode_NOT_FOUND = "HttpStatus.NOT_FOUND*_";
+	
 	@Override
 	public Employee addEmployee(Employee employee) throws EmployeeException {
+		
+		//System.out.println("Check version 2: "+ employee.getEmployeeID()+", "+employee);
 		
 		Boolean genderFlag = false;
 		for(Gender e : Gender.values()) {
@@ -72,7 +76,7 @@ public class EmployeeServiceImplimentation implements EmployeeService{
 		//employee.setEmployeeId(1);
 		//
 		
-		System.out.println(employee);
+		//System.out.println("Check version 1: "+ employee);
 
 		return employeeRepository.save(employee);
 		
@@ -82,20 +86,21 @@ public class EmployeeServiceImplimentation implements EmployeeService{
 	@Override
 	public Employee getEmployeeById(Integer employeeId) throws EmployeeException {
 		
-		Employee emp = employeeRepository.findById(employeeId).get();
-		if(emp != null)return emp;
-		else throw new EmployeeException("Employee not found with the given ID.");
+		Optional<Employee> emp = employeeRepository.findById(employeeId);
+		if(emp.isPresent())return emp.get();
+		else throw new EmployeeException(statusCode_NOT_FOUND + "Employee not found with the given ID.");
 	}
 
 	@Override
 	public Employee updateEmployeeById(Employee employee, Integer employeeId) throws EmployeeException, DocumentException {
-		Employee employeeWithId =  employeeRepository.findById(employeeId).orElseThrow( ()-> new EmployeeException("No employee with such ID found."));
+		Employee employeeWithId =  employeeRepository.findById(employeeId).orElseThrow( ()-> new EmployeeException(statusCode_NOT_FOUND + "No employee with such ID found."));
 
 		if(employee.getDateOfBirth()!= null) employeeWithId.setDateOfBirth(employee.getDateOfBirth());
 		if(employee.getDateOfJoining()!= null)employeeWithId.setDateOfJoining(employee.getDateOfJoining());
 		if(employee.getDateOfLeaving()!= null)employeeWithId.setDateOfLeaving(employee.getDateOfLeaving());
 	
-		
+		System.out.println("Check version 2");
+
 		if(employee.getDocuments() != null && employee.getDocuments().size() != 0) {
 			System.out.println("Check1");
 			Integer intialLength = employeeWithId.getDocuments().size();
@@ -179,17 +184,21 @@ public class EmployeeServiceImplimentation implements EmployeeService{
 			if(listOfDocuments.size() == 0)throw new DocumentException("Employee with Id "+ employeeId +" has has no documents in his records.");
 			else return listOfDocuments;
 		}
-		else throw new EmployeeException("Employee with Id "+ employeeId +" does not exists.");
+		else throw new EmployeeException(statusCode_NOT_FOUND + "Employee with Id "+ employeeId +" does not exists.");
 		
 	}
 
 
 	@Override
-	public List<Leaves> getAllLeavesByEmployeeIdWithinDateRange(Integer employeeID, DateRange dateRange) {
+	public List<Leaves> getAllLeavesByEmployeeIdWithinDateRange(Integer employeeID, DateRange dateRange) throws EmployeeException {
 
 		LocalDate startDate = dateRange.getLeaveFrom();
 		LocalDate endDate = dateRange.getLeaveTo();
+		Optional<Employee> employee = employeeRepository.findById(employeeID);
 
+		System.out.println("check version 2");
+		if(employee.isEmpty())throw new EmployeeException(statusCode_NOT_FOUND+ "No employee found with ID " + employeeID);
+		
 		List<Leaves> listOfAllLeaves = leaveRepository.findAll();
 		List<Leaves> listOfAllLeavesForAnEmployeeWithInDateRange = new ArrayList<>();
 		

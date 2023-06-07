@@ -35,7 +35,7 @@ public class SalaryController {
 	public ResponseEntity<Salary> getSalaryById(@PathVariable Integer salaryId) throws SalaryException{
 		
 		Salary salary = salaryService.getSalaryById(salaryId);
-		return new ResponseEntity<Salary>(salary, HttpStatus.ACCEPTED);
+		return new ResponseEntity<Salary>(salary, HttpStatus.OK);
 		
 	}
 	

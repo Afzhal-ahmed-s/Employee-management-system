@@ -34,6 +34,10 @@ dependencies {
   // Swagger dependencies
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
     implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+    
+    //version 2 Gradle
+implementation 'javax.validation:validation-api:2.0.1.Final'
+    
 }
 	
 	

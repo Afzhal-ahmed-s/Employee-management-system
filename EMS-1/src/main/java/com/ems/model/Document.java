@@ -28,7 +28,7 @@ public class Document {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer documentId;
-    private Integer number;
+    private String number;
     
     private String type;
     private LocalDate dateOfIssue;

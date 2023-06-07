@@ -4,17 +4,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
-
-import com.ems.enums.Department;
-import com.ems.enums.Gender;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.validation.constraints.Email;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,9 +25,15 @@ public class Employee {
 
 		@Id
 		@GeneratedValue(strategy = GenerationType.AUTO)
-	    private Integer employeeId;
+	    private Integer computationalEmployeeId;
+		
+		@Column(unique = true)
+		private String employeeID;
 	    private String firstName;
 	    private String lastName;
+	    
+	    
+		@Column(unique = true)
 	    private String phoneNumber;
 	    private LocalDate dateOfBirth;
 	    private LocalDate dateOfJoining;
@@ -38,6 +41,8 @@ public class Employee {
 	    
 	    private String gender;
 	    
+	    @Email(message = "Invalid email or such e-mail already exists in records.")		
+	    @Column(unique = true)
 	    private String emailAddress;
 	    
 	    @OneToMany(cascade = CascadeType.ALL)

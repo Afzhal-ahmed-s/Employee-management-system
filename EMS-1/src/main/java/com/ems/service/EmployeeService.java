@@ -22,5 +22,5 @@ public interface EmployeeService {
 	
 	public List<Document> getAlldocumentsById(Integer employeeId) throws DocumentException, EmployeeException;
 	
-	public List<Leaves> getAllLeavesByEmployeeIdWithinDateRange(Integer employeeID, DateRange dateRange);
+	public List<Leaves> getAllLeavesByEmployeeIdWithinDateRange(Integer employeeID, DateRange dateRange) throws EmployeeException;
 }
