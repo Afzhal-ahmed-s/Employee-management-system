@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.ems.exception.DocumentException;
 import com.ems.exception.EmployeeException;
 import com.ems.exception.SalaryException;
 import com.ems.model.Salary;
 import com.ems.model.SalaryDTO;
+import com.ems.repository.DocumentRepository;
 import com.ems.repository.EmployeeRepository;
 import com.ems.repository.SalaryRepository;
 import com.ems.service.SalaryService;
@@ -22,15 +24,28 @@ public class SalaryServiceImplementation implements SalaryService{
 	private SalaryRepository salaryRepository;
 	
 	@Autowired
-	private EmployeeRepository employeeRepository;
+	private EmployeeRepository employeeRepository;	
+	
+	@Autowired
+	private DocumentRepository documentRepository;
 	
 	String statusCode_NOT_FOUND = "HttpStatus.NOT_FOUND*_";
 	
 	@Override
-	public Salary addSalary(Salary salary) throws SalaryException, EmployeeException {
+	public Salary addSalary(Salary salary, Integer documentId) throws SalaryException, EmployeeException, DocumentException {
 		System.out.println("Check: "+ employeeRepository.findById(salary.getEmployeeId()) );
-		if(employeeRepository.findById(salary.getEmployeeId()).isPresent() )return salaryRepository.save(salary);
+		
+		if(employeeRepository.findById(salary.getEmployeeId()).isPresent()) {
+		if(documentRepository.findById(documentId).isPresent() ) {
+			
+			salary.setSalarySlip( documentRepository.findById(documentId).get() );
+			return salaryRepository.save(salary);
+		}
+		else throw new DocumentException(statusCode_NOT_FOUND + "Document ID "+ salary.getSalarySlip().getDocumentId() + " not found.");
+
+		}
 		else throw new EmployeeException(statusCode_NOT_FOUND + "Employee ID "+ salary.getEmployeeId() + " not found.");
+
 	}
 
 	@Override

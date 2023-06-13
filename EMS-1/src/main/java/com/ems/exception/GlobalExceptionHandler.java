@@ -34,7 +34,6 @@ public class GlobalExceptionHandler {
 		err.setDescription(wrq.getDescription(false));
 		
 		return properStatusCode(exc, err);
-		//return new ResponseEntity<MyErrorDetails>(err,HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler(SalaryException.class)
@@ -46,11 +45,22 @@ public class GlobalExceptionHandler {
 		err.setDescription(wrq.getDescription(false));
 		
 		return properStatusCode(exc, err);
-		//return new ResponseEntity<MyErrorDetails>(err,HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler(LeaveException.class)
 	public ResponseEntity<MyErrorDetails> exception(LeaveException exc,WebRequest wrq){
+		
+		MyErrorDetails err=new MyErrorDetails();
+		err.setLocaldateTime(LocalDateTime.now());
+		err.setMessage(exc.getMessage());
+		err.setDescription(wrq.getDescription(false));
+		
+		return properStatusCode(exc, err);
+		//return new ResponseEntity<MyErrorDetails>(err,HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(FileException.class)
+	public ResponseEntity<MyErrorDetails> exception(FileException exc,WebRequest wrq){
 		
 		MyErrorDetails err=new MyErrorDetails();
 		err.setLocaldateTime(LocalDateTime.now());
@@ -99,9 +109,11 @@ public class GlobalExceptionHandler {
 		
 		String[] errorMessageArray = exc.getMessage().split("\\*_");
 		Integer length = errorMessageArray.length;
-		
+		System.out.println("Check version 2: "+length);
+
 		if(length != 1) {
 			err.setMessage(errorMessageArray[1]);
+
 			if(errorMessageArray[0].compareToIgnoreCase("HttpStatus.NOT_FOUND")==0)return new ResponseEntity<MyErrorDetails>(err,HttpStatus.NOT_FOUND);
 			else return new ResponseEntity<MyErrorDetails>(err,HttpStatus.BAD_REQUEST);
 		}

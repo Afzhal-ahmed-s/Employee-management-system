@@ -17,6 +17,7 @@ import com.ems.model.DateRange;
 import com.ems.model.Document;
 import com.ems.model.Employee;
 import com.ems.model.Leaves;
+import com.ems.model.NextNumberGenerator;
 import com.ems.repository.EmployeeRepository;
 import com.ems.repository.LeaveRepository;
 import com.ems.service.EmployeeService;
@@ -30,7 +31,12 @@ public class EmployeeServiceImplimentation implements EmployeeService{
 	@Autowired
 	private LeaveRepository leaveRepository;
 	
+	@Autowired
+	private NextNumberGenerator nextNumberGenerator;
+	
 	String statusCode_NOT_FOUND = "HttpStatus.NOT_FOUND*_";
+	
+	StringBuilder NOD = new StringBuilder("NODUCO");
 	
 	@Override
 	public Employee addEmployee(Employee employee) throws EmployeeException {
@@ -47,6 +53,7 @@ public class EmployeeServiceImplimentation implements EmployeeService{
 		}
 		if(!genderFlag)throw new EmployeeException("Improper gender options provided.");
 
+		
 		Boolean departmentFlag = false;
 		for(Department e : Department.values()) {
 			if(e.toString().compareToIgnoreCase(employee.getDepartment().toString()) == 0) {
@@ -57,19 +64,21 @@ public class EmployeeServiceImplimentation implements EmployeeService{
 		}
 		if(!departmentFlag)throw new EmployeeException("Improper department options provided.");
 
+//		Version 2 change
+		employee.setDocuments(new ArrayList<>());
 		
-		Boolean documentFlag = false;
-		for(Document d : employee.getDocuments()) {
-			
-			for(DocumentType e : DocumentType.values()) {
-				if(d.getType().toUpperCase().compareToIgnoreCase(e.toString()) == 0) {
-					d.setType(e.toString());
-					documentFlag = true;
-				}
-			}
-			
-		}
-		if(!documentFlag)throw new EmployeeException("Improper document options provided.");
+//		Boolean documentFlag = false;
+//		for(Document d : employee.getDocuments()) {
+//			
+//			for(DocumentType e : DocumentType.values()) {
+//				if(d.getType().toUpperCase().compareToIgnoreCase(e.toString()) == 0) {
+//					d.setType(e.toString());
+//					documentFlag = true;
+//				}
+//			}
+//			
+//		}
+//		if(!documentFlag)throw new EmployeeException("Improper document options provided.");
 		
 		//To avoid error:- "could not execute statement; SQL [n/a]; constraint [null];
 		//nested exception is org.hibernate.exception.ConstraintViolationException: could not execute statement"
@@ -77,7 +86,14 @@ public class EmployeeServiceImplimentation implements EmployeeService{
 		//
 		
 		//System.out.println("Check version 1: "+ employee);
-
+		
+//		Version 2 change
+		Integer number = nextNumberGenerator.getNextNumber();
+		String employeeIDPackage = NOD.toString() + number;
+		employee.setEmployeeID( employeeIDPackage );
+		
+		System.out.println("Check version2: "+ employeeIDPackage);
+		
 		return employeeRepository.save(employee);
 		
 	}
@@ -181,7 +197,7 @@ public class EmployeeServiceImplimentation implements EmployeeService{
 		
 		if(employee.isPresent()) {
 			List<Document> listOfDocuments = employee.get().getDocuments();
-			if(listOfDocuments.size() == 0)throw new DocumentException("Employee with Id "+ employeeId +" has has no documents in his records.");
+			if(listOfDocuments.size() == 0)throw new DocumentException(statusCode_NOT_FOUND+"Employee with Id "+ employeeId +" has has no documents in his records.");
 			else return listOfDocuments;
 		}
 		else throw new EmployeeException(statusCode_NOT_FOUND + "Employee with Id "+ employeeId +" does not exists.");

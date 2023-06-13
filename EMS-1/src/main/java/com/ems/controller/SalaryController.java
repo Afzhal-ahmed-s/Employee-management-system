@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ems.exception.DocumentException;
 import com.ems.exception.EmployeeException;
 import com.ems.exception.SalaryException;
 import com.ems.model.Salary;
@@ -24,10 +25,10 @@ public class SalaryController {
 	@Autowired
 	private SalaryService salaryService;
 	
-	@PostMapping("")
-	public ResponseEntity<Salary> addSalary(@RequestBody Salary salary) throws SalaryException, EmployeeException {
+	@PostMapping("/{documentId}")
+	public ResponseEntity<Salary> addSalary(@RequestBody Salary salary, @PathVariable Integer documentId) throws SalaryException, EmployeeException, DocumentException {
 		
-		Salary persistedSalary = salaryService.addSalary(salary);
+		Salary persistedSalary = salaryService.addSalary(salary, documentId);
 		return new ResponseEntity<Salary>(persistedSalary, HttpStatus.CREATED);
 	}
 	

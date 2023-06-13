@@ -2,10 +2,18 @@ package com.ems.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,55 +27,71 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ems.exception.DocumentException;
+import com.ems.exception.EmployeeException;
 import com.ems.model.Document;
 import com.ems.service.DocumentService;
+
 
 @RestController
 @RequestMapping("/document")
 public class DocumentController {
 
 	@Autowired
-	public DocumentService DocumentService;
+	public DocumentService documentService;
 	
 	
 	 @PostMapping("/upload")
-	    public String uploadFile(@RequestParam("files") List<MultipartFile> files) throws IllegalStateException, IOException {
-	        // Process the uploaded file
-	        // You can access the file details using the MultipartFile object
+	    public List<String> uploadFiles(@RequestParam("files") List<MultipartFile> files, String foldername) throws IllegalStateException, IOException {
 
-	        // Example: Save the file to a specific location
-		 	System.out.println("Check version 2");
-		 	
-		 	for(MultipartFile e : files) {
-		         String filePath = "/Users/afzhalahmed/Documents/GitHub/Employee-management-system/Files/" + e.getOriginalFilename();
-		         e.transferTo(new File(filePath));
-
-		 	}
-
-	        return "Files uploaded successfully";
+	        return documentService.uploadMultipartFiles(files, foldername);
 	    }
+	 
+//	 @GetMapping("/download")
+//	 public ResponseEntity<ByteArrayResource> downloadFiles(@RequestParam String fileName) throws IOException {
+//		 
+//		 String filePath = "/Users/afzhalahmed/Documents/GitHub/Employee-management-system/Files/"+ fileName;	        
+//
+//		 File file = new File(filePath);
+//	      HttpHeaders headers = new HttpHeaders();
+//	      headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
+//	      headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+//	      headers.add("Pragma", "no-cache");
+//	      headers.add("Expires", "0");
+//	      
+//	      Path path = Paths.get(filePath);
+//	      
+//
+//	      ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
+//	      
+//	      
+//	      return ResponseEntity.ok().headers(headers)
+//	         .contentLength(file.length())
+//	         .contentType(MediaType.APPLICATION_OCTET_STREAM)
+//	         .body(resource);
+//
+//	 }
 	
 	
 	@GetMapping("/{documentId}")
 	public ResponseEntity<Document> getDocumentById(@PathVariable Integer documentId) throws DocumentException{
 		
-		 Document document = DocumentService.getDocumentByID(documentId);
+		 Document document = documentService.getDocumentByID(documentId);
 		
 		 return new ResponseEntity<Document>(document,HttpStatus.OK);
 	}
 	
-	@PostMapping("")
-	public ResponseEntity<Document> addDoccument(@RequestBody Document document) throws DocumentException{
+	@PostMapping("/{employeeID}")
+	public ResponseEntity<String> addDoccument(@PathVariable String employeeID, @RequestBody Document document) throws DocumentException, IllegalStateException, IOException, EmployeeException{
 		
-		Document persistedDocument = DocumentService.saveDocument(document);
+		String persistedDocument = documentService.saveDocument(employeeID, document);
 		
-		return new ResponseEntity<Document>(persistedDocument,HttpStatus.CREATED);
+		return new ResponseEntity<String>(persistedDocument,HttpStatus.CREATED);
 	}
 	
 	@DeleteMapping("/{documentId}")
 	public ResponseEntity<Document> deleteDocumentById(@PathVariable Integer documentId) throws DocumentException{
 		
-		Document document = DocumentService.deleteDocumentById(documentId);
+		Document document = documentService.deleteDocumentById(documentId);
 		return new ResponseEntity<Document>(document,HttpStatus.ACCEPTED);
 		
 	}
@@ -75,14 +99,14 @@ public class DocumentController {
 	@PatchMapping("/{documentId}")
 	public ResponseEntity<Document> updateDocumentById(@RequestBody Document document, @PathVariable Integer documentId)throws DocumentException{
 		
-		Document ans = DocumentService.updateDocumentById(document, documentId);
+		Document ans = documentService.updateDocumentById(document, documentId);
 		return new ResponseEntity<Document>(ans,HttpStatus.CREATED);
 	}
 	
 	@GetMapping("/getAllDocuments")
 	public ResponseEntity<List<Document>> getAllDocuments() throws DocumentException{
 		
-		 List<Document> listOfDocuments = DocumentService.getAllDocuments();
+		 List<Document> listOfDocuments = documentService.getAllDocuments();
 		
 		 return new ResponseEntity<List<Document>>(listOfDocuments,HttpStatus.OK);
 	}

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.ems.exception.EmployeeException;
 import com.ems.exception.LeaveException;
 import com.ems.exception.SalaryException;
+import com.ems.model.Employee;
 import com.ems.model.Leaves;
 import com.ems.model.Salary;
 import com.ems.repository.EmployeeRepository;
@@ -29,7 +30,29 @@ public class LeavesServiceImplementation implements LeavesService{
 	@Override
 	public Leaves addLeave(Leaves leaves) throws LeaveException {
 
-		if(employeeRepository.findById(leaves.getEmployeeId()).isPresent() )return leaveRepository.save(leaves);
+		if(employeeRepository.findById(leaves.getEmployeeId()).isPresent() ) {
+			
+			List<Leaves> listOfLeaves = leaveRepository.findByEmployeeId(leaves.getEmployeeId());
+			
+			if(listOfLeaves != null) {
+				if(listOfLeaves.size() != 0) {
+					for(Leaves e : listOfLeaves) {
+						if(
+								leaves.getLeaveFrom().isEqual(e.getLeaveFrom()) || leaves.getLeaveFrom().isEqual(e.getLeaveTo()) 
+								||	leaves.getLeaveTo().isEqual(e.getLeaveFrom()) || leaves.getLeaveTo().isEqual(e.getLeaveTo())
+										|| (leaves.getLeaveFrom().isAfter(e.getLeaveFrom()) && leaves.getLeaveFrom().isBefore(e.getLeaveTo()) ) 
+												|| (leaves.getLeaveTo().isAfter(e.getLeaveFrom()) && leaves.getLeaveTo().isBefore(e.getLeaveTo())) 
+						  ) {
+							Optional<Employee> emp = employeeRepository.findById( leaves.getEmployeeId());
+							throw new LeaveException("The leaves information you gave overlaps over another leave record for this employee " + emp.get().getEmployeeID() );
+						}
+		
+					}
+				}
+			}
+			
+			return leaveRepository.save(leaves);
+		}
 		else throw new LeaveException(statusCode_NOT_FOUND + "Employee ID "+ leaves.getEmployeeId() +" not found.");
 	}
 
