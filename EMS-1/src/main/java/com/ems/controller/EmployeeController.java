@@ -63,7 +63,7 @@ public class EmployeeController {
 		Employee persistedEmployee = employeeService.updateEmployeeById(employee, employeeId);
 		System.out.println("Check version 2 controller level");
 
-		return new ResponseEntity<Employee>(persistedEmployee,HttpStatus.ACCEPTED);
+		return new ResponseEntity<Employee>(persistedEmployee,HttpStatus.OK);
 	}
 	
 	@GetMapping("/{employeeId}/salary")

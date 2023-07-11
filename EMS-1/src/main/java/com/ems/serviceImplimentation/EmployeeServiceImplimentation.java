@@ -67,27 +67,6 @@ public class EmployeeServiceImplimentation implements EmployeeService{
 //		Version 2 change
 		employee.setDocuments(new ArrayList<>());
 		
-//		Boolean documentFlag = false;
-//		for(Document d : employee.getDocuments()) {
-//			
-//			for(DocumentType e : DocumentType.values()) {
-//				if(d.getType().toUpperCase().compareToIgnoreCase(e.toString()) == 0) {
-//					d.setType(e.toString());
-//					documentFlag = true;
-//				}
-//			}
-//			
-//		}
-//		if(!documentFlag)throw new EmployeeException("Improper document options provided.");
-		
-		//To avoid error:- "could not execute statement; SQL [n/a]; constraint [null];
-		//nested exception is org.hibernate.exception.ConstraintViolationException: could not execute statement"
-		//employee.setEmployeeId(1);
-		//
-		
-		//System.out.println("Check version 1: "+ employee);
-		
-//		Version 2 change
 		Integer number = nextNumberGenerator.getNextNumber();
 		String employeeIDPackage = NOD.toString() + number;
 		employee.setEmployeeID( employeeIDPackage );

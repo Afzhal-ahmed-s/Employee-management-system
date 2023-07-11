@@ -45,31 +45,6 @@ public class DocumentController {
 
 	        return documentService.uploadMultipartFiles(files, foldername);
 	    }
-	 
-//	 @GetMapping("/download")
-//	 public ResponseEntity<ByteArrayResource> downloadFiles(@RequestParam String fileName) throws IOException {
-//		 
-//		 String filePath = "/Users/afzhalahmed/Documents/GitHub/Employee-management-system/Files/"+ fileName;	        
-//
-//		 File file = new File(filePath);
-//	      HttpHeaders headers = new HttpHeaders();
-//	      headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
-//	      headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-//	      headers.add("Pragma", "no-cache");
-//	      headers.add("Expires", "0");
-//	      
-//	      Path path = Paths.get(filePath);
-//	      
-//
-//	      ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
-//	      
-//	      
-//	      return ResponseEntity.ok().headers(headers)
-//	         .contentLength(file.length())
-//	         .contentType(MediaType.APPLICATION_OCTET_STREAM)
-//	         .body(resource);
-//
-//	 }
 	
 	
 	@GetMapping("/{documentId}")

@@ -26,7 +26,7 @@ public class FileService {
 	        return zipFiles(fileList);
 	    }
 
-	    private byte[] zipFiles(List<File> fileList) throws FileException {
+	    public byte[] zipFiles(List<File> fileList) throws FileException {
 	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 	        try (ZipOutputStream zos = new ZipOutputStream(baos)) {
 	            for (File file : fileList) {
@@ -63,7 +63,7 @@ public class FileService {
 	
 	    
 
-	    private List<File> getFileList(File source) throws FileException {
+	    public List<File> getFileList(File source) throws FileException {
 	        List<File> fileList = new ArrayList<>();
 
 	        if (source.isFile()) {
@@ -85,7 +85,7 @@ public class FileService {
 	        return fileList;
 	    }
 
-	    private String getFileName(String filePath) {
+	    public String getFileName(String filePath) {
 	        String name = filePath.substring(filePath.lastIndexOf(File.separator) + 1);
 	        return name;
 	    }

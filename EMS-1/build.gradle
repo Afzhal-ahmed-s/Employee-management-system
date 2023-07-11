@@ -3,7 +3,8 @@ plugins {
 	id 'org.springframework.boot' version '2.7.12-SNAPSHOT'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 	
-	
+	id 'jacoco'
+	id 'org.sonarqube' version '3.3'
 }
 
 group = 'com.ems'
@@ -40,7 +41,19 @@ dependencies {
 
 	//junit and mockito
     testImplementation 'junit:junit:4.13.2'
+    
+    testCompileOnly 'junit:junit:4.12'
+	testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.3.1'
+    
     testImplementation 'org.mockito:mockito-core:3.12.4'
+    testImplementation 'org.jacoco:org.jacoco.core:0.8.7'
+    
+    testImplementation 'org.powermock:powermock-api-mockito2:2.0.2'
+	testImplementation 'org.powermock:powermock-module-junit4:2.0.2'
+    
+    
+    //implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.4'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0'
     
 }
 	
@@ -57,3 +70,29 @@ tasks.test {
     events("passed", "skipped", "failed")
   }
  }
+
+//jacoco start
+ 
+jacoco {
+    toolVersion = '0.8.7'
+}
+
+test {
+    jacoco {
+        enabled = true
+        destinationFile = file("$buildDir/jacoco/test.exec")
+    }
+}
+
+//jacoco end
+
+
+sonarqube {
+    properties {
+        property 'sonar.host.url', 'http://localhost:9000'
+        property 'sonar.projectKey', 'noduco-ems'
+        property 'sonar.projectName', 'Noduco_EMS'
+        property 'sonar.projectVersion', '1.0'
+    }
+}
+ 

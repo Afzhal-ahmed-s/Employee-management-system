@@ -1,5 +1,6 @@
 package com.ems.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -20,4 +21,5 @@ public interface DocumentService {
 	public Document updateDocumentById(Document document, Integer documentId)throws DocumentException;
 	
 	public List<String> uploadMultipartFiles(List<MultipartFile> files, String foldername) throws IllegalStateException, IOException;
+	public void deleteDirectory(File file);
 }

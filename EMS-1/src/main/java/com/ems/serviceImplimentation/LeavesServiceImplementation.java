@@ -6,12 +6,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ems.exception.EmployeeException;
 import com.ems.exception.LeaveException;
-import com.ems.exception.SalaryException;
 import com.ems.model.Employee;
 import com.ems.model.Leaves;
-import com.ems.model.Salary;
 import com.ems.repository.EmployeeRepository;
 import com.ems.repository.LeaveRepository;
 import com.ems.service.LeavesService;

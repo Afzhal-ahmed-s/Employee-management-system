@@ -256,15 +256,12 @@ public class DocumentServiceImplementation implements DocumentService{
 		if(document.getFile()!= null &&  document.getFile().size() > 0) {
 			String pathToDelete = document.getFile().get(0);
 			
-//			Path path = Paths.get(pathToDelete).getParent();
 			File filePath = Paths.get(pathToDelete).getParent().toFile();
 			
 			deleteDirectory(filePath);
 
 		}
-		
-		//iteratively delete the list of string: pathURL in the server
-		
+				
 		documentRepository.delete(document);
 		
 		return document;
@@ -318,7 +315,8 @@ public class DocumentServiceImplementation implements DocumentService{
        return fileNames;
 	}
 	
-	private void deleteDirectory(File file)
+	@Override
+	public void deleteDirectory(File file)
     {
         // store all the paths of files and folders present
         // inside directory
